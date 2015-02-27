@@ -1,0 +1,8 @@
+Alias /{{app_name}} {{base_dev_path}}/{{app_name}}/public
+
+<Directory {{base_dev_path}}/{{app_name}}/public>
+       Options Indexes FollowSymLinks
+       AllowOverride All
+       Require all granted
+</Directory>
+

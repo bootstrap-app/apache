@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: BootstrapApp\Apache
+        psr4_prefix: BootstrapApp\Apache
+        src_path: src
