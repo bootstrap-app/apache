@@ -21,22 +21,24 @@ class ApacheFilesGeneratorSpec extends ObjectBehavior {
 
     function it_create_alias_file_for_apache22()
     {
-        $this->createAliasForLaravel("22")->shouldBe(null);
+        $this->createAliasForLaravel()->shouldBe(null);
     }
 
     function it_create_alias_file_for_apache24()
     {
+        $this->setApacheVersion("24");
         $this->createAliasForLaravel()->shouldBe(null);
     }
 
-    function it_create_alias_file_for_apache22_null_aready_exists()
+    function it_create_alias_file_for_apache22_null_already_exists()
     {
-        $this->createAliasForLaravel("22", false)->shouldBe("File already exists!");
+        $this->setApacheVersion("22");
+        $this->createAliasForLaravel(false)->shouldBe("File already exists!");
     }
 
-    function it_create_alias_file_for_apache24_null_aready_exists()
+    function it_create_alias_file_for_apache24_null_already_exists()
     {
-        $this->createAliasForLaravel("24",false)->shouldBe("File already exists!");
+        $this->createAliasForLaravel(false)->shouldBe("File already exists!");
     }
 
     function it_compile_alias_for_laravel()
@@ -46,17 +48,20 @@ class ApacheFilesGeneratorSpec extends ObjectBehavior {
 
     function it_compile_alias_for_laravel_22()
     {
-        $this->compileAliasForLaravel("22")->shouldBe(getCompletedStub22());
+        $this->setApacheVersion("22");
+        $this->compileAliasForLaravel()->shouldBe(getCompletedStub22());
     }
 
-    function it_get_stub_file() {
+    function it_get_stub_file()
+    {
 
         $this->getStubFile()->shouldBe(getStub24());
     }
 
-    function it_get_stub_file22() {
-
-        $this->getStubFile("22")->shouldBe(getStub22());
+    function it_get_stub_file22()
+    {
+        $this->setApacheVersion("22");
+        $this->getStubFile()->shouldBe(getStub22());
     }
 
 
