@@ -54,16 +54,17 @@ class ApacheFilesGenerator {
      * @param string $apache_version
      * @return string
      */
-    public function createAliasForLaravel($apache_version = "24")
+    public function createAliasForLaravel($apache_version = "24",$force=true)
     {
         if ($this->files->exists($path = $this->getPath($this->app_name)))
         {
-            return 'File already exists!';
+            if (!$force) {
+                return 'File already exists!';
+            }
         }
 
         $this->makeDirectory($path);
         $this->files->put($path, $this->compileAliasForLaravel($apache_version));
-
     }
 
     /**
@@ -86,12 +87,9 @@ class ApacheFilesGenerator {
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function compileAliasForLaravel($apache_version = "24")
+    public function compileAliasForLaravel($apache_version = "24")
     {
-        $stub_file = $apache_version == "24" ?
-            '/../stubs/apache_24_alias_laravel.stub' : '/../stubs/apache_22_alias_laravel.stub';
-
-        $stub = $this->files->get(__DIR__ . $stub_file);
+        $stub = $this->getStubFile($apache_version);
 
         $this->replaceAppName($stub, $this->app_name)
             ->replaceBaseDevPath($stub, $this->base_dev_path);
@@ -109,7 +107,7 @@ class ApacheFilesGenerator {
      */
     protected function replaceAppName(&$stub, $app_name)
     {
-        return $this->replace($stub, $app_name);
+        return $this->replace($stub, '{{app_name}}', $app_name);
     }
 
 
@@ -120,7 +118,7 @@ class ApacheFilesGenerator {
      */
     protected function replaceBaseDevPath(&$stub, $base_dev_path)
     {
-        return $this->replace($stub, $base_dev_path);
+        return $this->replace($stub, '{{base_dev_path}}', $base_dev_path);
     }
 
     /**
@@ -129,9 +127,21 @@ class ApacheFilesGenerator {
      * @param $var
      * @return $this
      */
-    protected function replace(&$stub, $var)
+    protected function replace(&$stub, $current_value, $new_value)
     {
-        $stub = str_replace('{{app_name}}', $var, $stub);
+        $stub = str_replace($current_value, $new_value, $stub);
         return $this;
+    }
+
+    /**
+     * @param $apache_version
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function getStubFile($apache_version = "24")
+    {
+        $stub_file = $apache_version == "24" ?
+            '/stubs/apache_24_alias_laravel.stub' : '/stubs/apache_22_alias_laravel.stub';
+        return $this->files->get(__DIR__ . $stub_file);
     }
 }
