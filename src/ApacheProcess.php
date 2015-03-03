@@ -41,7 +41,7 @@ class ApacheProcess extends DaemonProcess
     }
 
     public function a2enconf($config_file_name){
-        $this->run_command($this->get_enable_config_command($config_file_name));
+        return $this->run_command($this->get_enable_config_command($config_file_name));
     }
 
 }
