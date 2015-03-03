@@ -41,7 +41,7 @@ class ApacheFilesGenerator {
      * @param null $apache_base_path
      * @param string $apache_version
      */
-    function __construct(Filesystem $files, $app_name, $base_dev_path, $apache_base_path = null, $apache_version = "24")
+    public function __construct(Filesystem $files, $app_name, $base_dev_path, $apache_base_path = null, $apache_version = "24")
     {
         $this->files = $files;
         $this->app_name = $app_name;
