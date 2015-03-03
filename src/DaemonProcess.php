@@ -69,19 +69,11 @@ class DaemonProcess
         $this->quiet_mode = $quiet_mode;
     }
 
+
+
     public function reload()
     {
-        $process = new Process($this->get_reload_command());
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-        if (!$this->isQuietMode()) {
-            echo $process->getOutput();
-        }
-
-        return $process->getExitCode();
+        return $this->run_command($this->get_reload_command());
     }
 
     protected function get_reload_command()
@@ -96,5 +88,23 @@ class DaemonProcess
             }
         }
 
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function run_command($command)
+    {
+        $process = new Process($command);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
+        if (!$this->isQuietMode()) {
+            echo $process->getOutput();
+        }
+
+        return $process->getExitCode();
     }
 }

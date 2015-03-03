@@ -41,17 +41,7 @@ class ApacheProcess extends DaemonProcess
     }
 
     public function a2enconf($config_file_name){
-        $process = new Process($this->get_enable_config_command($config_file_name));
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-        if (!$this->isQuietMode()) {
-            echo $process->getOutput();
-        }
-
-        return $process->getExitCode();
+        $this->run_command($this->get_enable_config_command($config_file_name));
     }
 
 }
