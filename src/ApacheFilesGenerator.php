@@ -102,7 +102,7 @@ class ApacheFilesGenerator {
         }
 
         $this->makeDirectory($path);
-        $this->files->put($path, $this->compileAliasForLaravel($this->apache_version));
+        $this->files->put($path, $this->compileAliasForLaravel());
     }
 
     /**
