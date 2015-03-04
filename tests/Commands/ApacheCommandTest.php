@@ -7,6 +7,8 @@
  * Time: 10:32
  */
 
+namespace BootstrapApp\tests;
+
 use BootstrapApp\Apache\Commands\ApacheCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -42,7 +44,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteUnknownCommand()
     {
-        $this->setExpectedException('RuntimeException', 'unkown command!');
+        $this->setExpectedException('RuntimeException', 'Unknown command!');
         $this->executeApache(array(
             'apache:command' => 'asdasdasdasdasd',
         ));
@@ -61,15 +63,16 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException('RuntimeException','ERROR: Conf default does not exist!');
         }
 
-        $commandTester = $this->executeApacheA2enconf();
+        $commandTester = $this->executeApacheCommand("a2enconf");
 
         //No news Good news!
         $this->assertEquals("", $commandTester->getDisplay());
 
     }
 
+
     /**
-     *
+     * Test execution of apache a2enconf
      */
     public function testExecuteA2enconf()
     {
@@ -81,7 +84,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
         $fg = new ApacheFilesGenerator( new Filesystem(),"app_name","/usr/share/app_name");
 
         $fg->createAliasForLaravel();
-        $commandTester = $this->executeApacheA2enconf("app_name");
+        $commandTester = $this->executeApacheCommand("a2enconf","app_name");
 
         //No news Good news!
         $this->assertEquals("", $commandTester->getDisplay());
@@ -98,6 +101,9 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     *
+     */
     public function testExecuteInstall2()
     {
         //Expected RunTimeException is test is no executed as root
@@ -108,7 +114,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
         $fg = new ApacheFilesGenerator( new Filesystem(),"app_name1","/usr/share/app_name1");
 
         $fg->createAliasForLaravel();
-        $commandTester = $this->executeApacheInstall("app_name1");
+        $commandTester = $this->executeApacheCommand("install","app_name1");
 
         //No news Good news!
         $this->assertEquals("", $commandTester->getDisplay());
@@ -118,14 +124,28 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @return CommandTester
      */
-    protected function executeApacheInstall($app_name=null)
+    protected function executeApacheCommand($command,$app_name=null)
     {
-        $input = array ('apache:command' => 'install');
+        $input = array ('apache:command' => $command);
         if ($app_name != null) {
             $input['apache:app_name'] = $app_name;
         }
         return $this->executeApache($input);
     }
+
+    /**
+     * @param $app_name
+     * @return CommandTester
+     */
+    protected function executeApacheA2enconf($app_name=null)
+    {
+        $input = array ('apache:command' => 'a2enconf');
+        if ($app_name != null) {
+            $input['apache:app_name'] = $app_name;
+        }
+        return $this->executeApache($input);
+    }
+
 
     /**
      * @return CommandTester
@@ -137,18 +157,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    /**
-     * @param null $app_name
-     * @return CommandTester
-     */
-    protected function executeApacheA2enconf($app_name=null)
-    {
-        $input = array ('apache:command' => 'a2enconf');
-        if ($app_name != null) {
-            $input['apache:app_name'] = $app_name;
-        }
-        return $this->executeApache($input);
-    }
+
 
     /**
      * @param array $input

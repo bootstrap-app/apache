@@ -26,7 +26,7 @@ class ApacheCommand extends Command {
             ->addArgument(
                 'apache:command',
                 InputArgument::REQUIRED,
-                'The apache command to execute'
+                'The apache command to execute (install | reload | a2enconf )'
             )
             ->addArgument(
                 'apache:app_name',
@@ -48,7 +48,6 @@ class ApacheCommand extends Command {
 
         switch ($command) {
             case "install":
-
                 if ($app_name = $input->getArgument('apache:app_name')) {
                     return $this->executeInstall($app_name);
                 } else {
@@ -67,7 +66,7 @@ class ApacheCommand extends Command {
 
                 break;
             default:
-                throw new \RuntimeException("unkown command!");
+                throw new \RuntimeException("Unknown command!");
         }
 
 
