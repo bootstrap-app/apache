@@ -73,7 +73,7 @@ class DaemonProcess
 
     public function reload()
     {
-        return $this->run_command($this->get_reload_command());
+        return $this->run_command_as_root($this->get_reload_command());
     }
 
     protected function get_reload_command()
@@ -88,6 +88,18 @@ class DaemonProcess
             }
         }
 
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function run_command_as_root($command)
+    {
+        if (0 == posix_getuid()) {
+            $this->run_command($command);
+        } else {
+            throw new \RuntimeException("Command has to be executed by root");
+        }
     }
 
     /**

@@ -15,7 +15,9 @@
     "symfony/process": "2.6.*"
   },
   "require-dev": {
-    "phpspec/phpspec": "~2.1"
+    "phpspec/phpspec": "~2.1",
+    "phpunit/phpunit": "4.5.*",
+    "symfony/framework-bundle": "2.6.*"
   },
   "autoload": {
     "psr-4": {

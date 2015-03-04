@@ -26,7 +26,7 @@ class ApacheProcess extends DaemonProcess
      */
     private $a2enconf_executable;
 
-    function __construct($a2enconf_executable = self::A2ENCONF_EXECUTABLE)
+    public function __construct($a2enconf_executable = self::A2ENCONF_EXECUTABLE)
     {
         parent::__construct();
         $this->setDaemonName("apache2");
@@ -41,7 +41,7 @@ class ApacheProcess extends DaemonProcess
     }
 
     public function a2enconf($config_file_name){
-        return $this->run_command($this->get_enable_config_command($config_file_name));
+        return $this->run_command_as_root($this->get_enable_config_command($config_file_name));
     }
 
 }
