@@ -42,7 +42,7 @@ class DaemonProcess
     protected $daemon_name;
     protected $quiet_mode = true;
 
-    function __construct(
+    public function __construct(
         $service_command = self::SERVICE_COMMAND,
         $scripts_folder = self::V5_SCRIPTS_FOLDER,
         $daemon_name = self::DAEMON_NAME
