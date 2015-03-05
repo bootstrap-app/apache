@@ -66,6 +66,7 @@ class ApacheCommand extends Command
                 } else {
                     return $this->executeInstall();
                 }
+                // no break is possible
             case "reload":
                 return $this->executeReload();
             case "a2enconf":
@@ -74,6 +75,7 @@ class ApacheCommand extends Command
                 } else {
                     return $this->executeA2enconf();
                 }
+                // no break is possible
             default:
                 throw new \RuntimeException("Unknown command!");
         }
