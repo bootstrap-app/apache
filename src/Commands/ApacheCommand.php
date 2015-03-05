@@ -132,7 +132,6 @@ class ApacheCommand extends Command
     private function getAppName()
     {
         if (file_exists("./bootstrapp-app.json")) {
-            $filesystem = new Filesystem();
             $bootstrappAppConfigFile = $this->jsonDecodeBootstrapApp();
             if (property_exists($bootstrappAppConfigFile, "name")) {
                 return $bootstrappAppConfigFile->name;
