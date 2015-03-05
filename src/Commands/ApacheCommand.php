@@ -57,9 +57,7 @@ class ApacheCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $command = $input->getArgument('apache:command');
-
-        switch ($command) {
+        switch ($input->getArgument('apache:command')) {
             case "install":
                 if ($app_name = $input->getArgument('apache:app_name')) {
                     return $this->executeInstall($app_name);
@@ -100,23 +98,7 @@ class ApacheCommand extends Command
     private function executeInstall($app_name = null)
     {
         if ($app_name == null) {
-            if (file_exists("./bootstrapp-app.json")) {
-                $filesystem = new Filesystem();
-                $bootstrappAppConfigFile = json_decode($filesystem->get("./bootstrapp-app.json"));
-                if ($bootstrappAppConfigFile != null) {
-                    if (property_exists($bootstrappAppConfigFile, "name")) {
-                        $app_name = $bootstrappAppConfigFile->name;
-                    } else {
-                        throw new \RuntimeException("No name found at file bootstrapp-app.json!");
-                    }
-                } else {
-                    throw new \RuntimeException("Error decoding json file bootstrapp-app.json. Invalid format!");
-                }
-
-
-            } else {
-                $app_name = basename(__DIR__);
-            }
+            $app_name = $this->getAppName();
         }
         $apache = new ApacheProcess();
         $apache->a2enconf($app_name);
@@ -132,5 +114,34 @@ class ApacheCommand extends Command
     {
         $apache = new ApacheProcess();
         return $apache->a2enconf($app_name);
+    }
+
+    private function jsonDecodeBootstrapApp(){
+        $filesystem = new Filesystem();
+        $bootstrappAppConfigFile = json_decode($filesystem->get("./bootstrapp-app.json"));
+        if ($bootstrappAppConfigFile == null)
+            throw new \RuntimeException("Error decoding json file bootstrapp-app.json. Invalid format!");
+        else
+            return $bootstrappAppConfigFile;
+    }
+
+    /**
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function getAppName()
+    {
+        if (file_exists("./bootstrapp-app.json")) {
+            $filesystem = new Filesystem();
+            $bootstrappAppConfigFile = $this->jsonDecodeBootstrapApp();
+            if (property_exists($bootstrappAppConfigFile, "name")) {
+                return $bootstrappAppConfigFile->name;
+            } else {
+                throw new \RuntimeException("No name found at file bootstrapp-app.json!");
+            }
+        } else {
+            $app_name = basename(__DIR__);
+            return $app_name;
+        }
     }
 }
