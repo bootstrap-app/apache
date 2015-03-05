@@ -102,7 +102,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
     public
     function testExecuteInstallCommand()
     {
-        $this->executeCommand("install","app_name1","/usr/share");
+        $this->executeCommand("install", "app_name1", "/usr/share");
     }
 
     /**
@@ -110,7 +110,7 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteA2enconf()
     {
-        $this->executeCommand("a2enconf","app_name","/usr/share");
+        $this->executeCommand("a2enconf", "app_name", "/usr/share");
     }
 
     /**
@@ -118,14 +118,14 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
      * @param $app_name
      * @param $path
      */
-    public function executeCommand($command,$app_name,$path)
+    public function executeCommand($command, $app_name, $path)
     {
         //Expected RunTimeException is test is no executed as root
         if (!(0 == posix_getuid())) {
             $this->setExpectedException('RuntimeException', 'Command has to be executed by root');
         }
 
-        $fg = new ApacheFilesGenerator(new Filesystem(), $app_name , $path);
+        $fg = new ApacheFilesGenerator(new Filesystem(), $app_name, $path);
 
         $fg->createAliasForLaravel();
         $commandTester = $this->executeApacheCommand($command, $app_name);
@@ -147,21 +147,6 @@ class ApacheCommandTest extends \PHPUnit_Framework_TestCase
         }
         return $this->executeApache($input);
     }
-
-    /**
-     * @param $app_name
-     * @return CommandTester
-     */
-    protected
-    function executeApacheA2enconf($app_name = null)
-    {
-        $input = array('apache:command' => 'a2enconf');
-        if ($app_name != null) {
-            $input['apache:app_name'] = $app_name;
-        }
-        return $this->executeApache($input);
-    }
-
 
     /**
      * @return CommandTester
