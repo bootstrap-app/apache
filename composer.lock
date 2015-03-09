@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "839fa0ad2858b6b6553926d7f6464a89",
+    "hash": "df800fe447da142a5b92b3e5c2a7acd8",
     "packages": [
         {
             "name": "danielstjules/stringy",
@@ -624,6 +624,44 @@
                 "parser"
             ],
             "time": "2014-09-09 13:34:57"
+        },
+        {
+            "name": "mikey179/vfsStream",
+            "version": "v1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikey179/vfsStream.git",
+                "reference": "61b12172292cf539685507aa65b076c1530e83c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/61b12172292cf539685507aa65b076c1530e83c1",
+                "reference": "61b12172292cf539685507aa65b076c1530e83c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "org\\bovigo\\vfs\\": "src/main/php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "homepage": "http://vfs.bovigo.org/",
+            "time": "2014-09-14 10:18:53"
         },
         {
             "name": "phpdocumentor/reflection-docblock",

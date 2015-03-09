@@ -9,45 +9,125 @@ use Illuminate\Filesystem\Filesystem;
  * Class ApacheFilesGenerator
  * @package BootstrapApp\Apache
  */
-class ApacheFilesGenerator {
-
-
+class ApacheFilesGenerator
+{
     /**
      * @var Filesystem
      */
-    private $files;
+    public $filesystem;
+
     /**
      * @var
      */
-    private $app_name;
+    protected $app_name;
+
     /**
      * @var
      */
-    private $base_dev_path;
+    protected $base_dev_path;
+
     /**
      * @var null
      */
-    private $apache_base_path;
+    protected $apache_base_path;
+
     /**
      * @var string
      */
-    private $apache_version;
+    protected $apache_version;
 
 
     /**
-     * @param Filesystem $files
+     * @var string
+     */
+    protected $root;
+
+
+    /**
      * @param $app_name
      * @param $base_dev_path
      * @param null $apache_base_path
      * @param string $apache_version
+     * @param null $root
      */
-    public function __construct(Filesystem $files, $app_name, $base_dev_path, $apache_base_path = null, $apache_version = "24")
+    public function __construct(
+        $app_name,
+        $base_dev_path,
+        $apache_base_path = null,
+        $apache_version = "24",
+        $root = null)
     {
-        $this->files = $files;
+        $this->root = $root ?: '/';
+
+        $this->filesystem = new Filesystem();
         $this->app_name = $app_name;
         $this->base_dev_path = $base_dev_path;
         $this->apache_base_path = $apache_base_path;
         $this->apache_version = $apache_version;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppName()
+    {
+        return $this->app_name;
+    }
+
+    /**
+     * @param mixed $app_name
+     */
+    public function setAppName($app_name)
+    {
+        $this->app_name = $app_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBaseDevPath()
+    {
+        return $this->base_dev_path;
+    }
+
+    /**
+     * @param mixed $base_dev_path
+     */
+    public function setBaseDevPath($base_dev_path)
+    {
+        $this->base_dev_path = $base_dev_path;
+    }
+
+    /**
+     * @return Filesystem
+     */
+    public function getFilesystem()
+    {
+        return $this->filesystem;
+    }
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function setFilesystem($filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * @return null
+     */
+    public function getApacheBasePath()
+    {
+        return $this->apache_base_path;
+    }
+
+    /**
+     * @param null $apache_base_path
+     */
+    public function setApacheBasePath($apache_base_path)
+    {
+        $this->apache_base_path = $apache_base_path;
     }
 
     /**
@@ -67,6 +147,14 @@ class ApacheFilesGenerator {
     }
 
 
+    /**
+     * @param $file
+     * @return string
+     */
+    protected function getPath($file)
+    {
+        return $this->root . $file;
+    }
 
     /**
      * Get the path to where we should store the migration.
@@ -74,35 +162,36 @@ class ApacheFilesGenerator {
      * @param  string $name
      * @return string
      */
-    protected function getPath($name)
+    public function getConfFilePath($name)
     {
-        ($this->apache_base_path != null) ? $apache_base_path = $this->apache_base_path : $apache_base_path = "/etc/apache2/";
-        
+        ($this->apache_base_path != null) ? $apache_base_path = $this->getPath($this->apache_base_path) :
+            $apache_base_path = $this->getPath("/etc/apache2/");
+
+        $suffix = "";
         if ($this->apache_version === "24") {
-            return $apache_base_path . '/conf-available/' . $name . '.conf';
+            $suffix = '/conf-available/' . $name . '.conf';
         } else {
-            return $apache_base_path . '/conf.d/' . $name . '.conf';
+            $suffix = '/conf.d/' . $name . '.conf';
         }
 
-    }
+        return $apache_base_path . $suffix;
 
+    }
 
     /**
      * @param bool $force
      * @return string
      */
-    public function createAliasForLaravel( $force = true)
+    public function createAliasForLaravel($force = true)
     {
-        if ($this->files->exists($path = $this->getPath($this->app_name)))
-        {
-            if (!$force)
-            {
+        if ($this->filesystem->exists($path = $this->getConfFilePath($this->app_name))) {
+            if (!$force) {
                 return 'File already exists!';
             }
         }
 
         $this->makeDirectory($path);
-        $this->files->put($path, $this->compileAliasForLaravel());
+        $this->filesystem->put($path, $this->compileAliasForLaravel());
     }
 
     /**
@@ -113,9 +202,8 @@ class ApacheFilesGenerator {
      */
     protected function makeDirectory($path)
     {
-        if (!$this->files->isDirectory(dirname($path)))
-        {
-            $this->files->makeDirectory(dirname($path), 0775, true, true);
+        if (!$this->filesystem->isDirectory(dirname($path))) {
+            $this->filesystem->makeDirectory(dirname($path), 0775, true, true);
         }
     }
 
@@ -177,6 +265,6 @@ class ApacheFilesGenerator {
     {
         $stub_file = $this->apache_version == "24" ?
             '/stubs/apache_24_alias_laravel.stub' : '/stubs/apache_22_alias_laravel.stub';
-        return $this->files->get(__DIR__ . $stub_file);
+        return $this->filesystem->get(__DIR__ . $stub_file);
     }
 }
